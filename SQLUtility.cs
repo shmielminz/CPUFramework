@@ -5,10 +5,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace CPUFramework
 {
-    public static class SQLUtility
+    public class SQLUtility
     {
         public static string ConnectionString = "";
         public static DataTable GetDataTable(string sqlstatement) //- take a SQL statement and return a data table
@@ -23,6 +24,17 @@ namespace CPUFramework
             var dr = cmd.ExecuteReader();
             dt.Load(dr);
             return dt;
+        }
+
+        public static void DebugPrintDataTable(DataTable dt)
+        {
+            foreach(DataRow r in dt.Rows)
+            {
+                foreach(DataColumn c in dt.Columns)
+                {
+                    Debug.Print(c.ColumnName + " = " + r[c.ColumnName].ToString());
+                }
+            }
         }
     }
 }

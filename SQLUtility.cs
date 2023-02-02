@@ -14,6 +14,7 @@ namespace CPUFramework
         public static string ConnectionString = "";
         public static DataTable GetDataTable(string sqlstatement) //- take a SQL statement and return a data table
         {
+            Debug.Print(sqlstatement);
             DataTable dt = new();
             SqlConnection conn = new();
             conn.ConnectionString = ConnectionString;

@@ -12,22 +12,42 @@ namespace CPUFramework
     public class SQLUtility
     {
         public static string ConnectionString = "";
-        public static DataTable GetDataTable(string sqlstatement) //- take a SQL statement and return a data table
+
+        public static SqlCommand GetSqlCommand(string sprocname)
         {
-            Debug.Print(sqlstatement);
+            SqlCommand cmd;
+            using (SqlConnection conn = new(ConnectionString))
+            {
+                cmd = new(sprocname, conn);
+                cmd.CommandType = CommandType.StoredProcedure;
+
+                conn.Open();
+                SqlCommandBuilder.DeriveParameters(cmd);
+            }
+            return cmd;
+        }
+
+        public static DataTable GetDataTable(SqlCommand cmd)
+        {
+            Debug.Print("-------" + Environment.NewLine + cmd.CommandText);
             DataTable dt = new();
-            SqlConnection conn = new();
-            conn.ConnectionString = ConnectionString;
-            conn.Open();
-            var cmd = new SqlCommand();
-            cmd.Connection = conn;
-            cmd.CommandText = sqlstatement;
-            var dr = cmd.ExecuteReader();
-            dt.Load(dr);
+
+            using (SqlConnection conn = new(ConnectionString))
+            {
+                conn.Open();
+                cmd.Connection = conn;
+                SqlDataReader dr = cmd.ExecuteReader();
+                dt.Load(dr);
+            }
 
             SetAllColumnsAllowNull(dt);
 
             return dt;
+        }
+
+        public static DataTable GetDataTable(string sqlstatement) //- take a SQL statement and return a data table
+        {
+            return GetDataTable(new SqlCommand(sqlstatement));
         }
 
         public static void ExecuteSql(string sqlstatement)

@@ -124,6 +124,15 @@ namespace CPUFramework
                     msg = msg.Substring(0, pos);
                     msg = msg.Replace("_", " ");
                     msg = msg + msgend;
+
+                    if (prefix == "f_")
+                    {
+                        var words = msg.Split(" ");
+                        if (words.Length > 1)
+                        {
+                            msg = $"Cannot delete {words[0]} because it has a related {words[1]} record.";
+                        }
+                    }
                 }
             }
             return msg;

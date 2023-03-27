@@ -49,6 +49,7 @@ namespace CPUFramework
                     row[columnname] = param.Value;
                 }
             }
+            row.Table.AcceptChanges();
         }
 
         private static DataTable DoExecuteSQL(SqlCommand cmd, bool loadtable)
@@ -250,6 +251,16 @@ namespace CPUFramework
                 }
             }
             return value;
+        }
+
+        public static bool TableHasChanges(DataTable dt)
+        {
+            bool b = false;
+            if (dt.GetChanges() != null)
+            {
+                b = true;
+            }
+            return b;
         }
 
         public static string GetSQL(SqlCommand cmd)

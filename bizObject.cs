@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Reflection;
 using System.ComponentModel;
@@ -38,6 +38,7 @@ namespace CPUFramework
             {
                 LoadProps(dt.Rows[0]);
             }
+            foreach (DataColumn col in dt.Columns) col.ReadOnly = false;
             _datatable = dt;
             return dt;
         }

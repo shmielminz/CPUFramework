@@ -1,4 +1,4 @@
-﻿using System.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using System.Data;
 using System.Text;
 using System.Diagnostics;
@@ -172,13 +172,16 @@ namespace CPUFramework
         public static void SetParamValue(SqlCommand cmd, string paramname, object value)
         {
             if (!paramname.StartsWith("@")) { paramname = "@" + paramname; }
-            try
+            if (cmd.Parameters.Contains(paramname))
             {
-                cmd.Parameters[paramname].Value = value;
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(cmd.CommandText + ": " + ex.Message, ex);
+                try
+                {
+                    cmd.Parameters[paramname].Value = value;
+                }
+                catch (Exception ex)
+                {
+                    throw new Exception(cmd.CommandText + ": " + ex.Message, ex);
+                }
             }
         }
 

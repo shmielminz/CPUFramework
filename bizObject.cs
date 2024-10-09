@@ -52,6 +52,15 @@ namespace CPUFramework
             return GetListFromDataTable(dt);
         }
 
+        public List<T> GetListThatHaveChildRecords(bool includeblank = false)
+        {
+            SqlCommand cmd = SQLUtility.GetSqlCommand(_getsproc);
+            SQLUtility.SetParamValue(cmd, "@List", 1);
+            SQLUtility.SetParamValue(cmd, "@IncludeBlank", includeblank);
+            var dt = SQLUtility.GetDataTable(cmd);
+            return GetListFromDataTable(dt);
+        }
+
         protected List<T> GetListFromDataTable(DataTable dt)
         {
             List<T> lst = new();
@@ -64,7 +73,7 @@ namespace CPUFramework
             return lst;
         }
 
-        private void LoadProps(DataRow dr)
+        protected void LoadProps(DataRow dr)
         {
             foreach (DataColumn col in dr.Table.Columns)
             {
@@ -74,6 +83,7 @@ namespace CPUFramework
 
         public void Delete(int id)
         {
+            this.ErrorMessage = "";
             SqlCommand cmd = SQLUtility.GetSqlCommand(_deletesproc);
             SQLUtility.SetParamValue(cmd, _primarykeyparamname, id);
             SQLUtility.ExecuteSql(cmd);
@@ -81,6 +91,7 @@ namespace CPUFramework
 
         public void Delete()
         {
+            this.ErrorMessage = "";
             PropertyInfo? prop = GetProp(_primarykeyname, true, false);
             if (prop != null)
             {
@@ -100,6 +111,7 @@ namespace CPUFramework
 
         public void Save()
         {
+            this.ErrorMessage = "";
             SqlCommand cmd = SQLUtility.GetSqlCommand(_updatesproc);
             foreach (SqlParameter param in cmd.Parameters)
             {
@@ -123,6 +135,7 @@ namespace CPUFramework
 
         public void Save(DataTable datatable)
         {
+            this.ErrorMessage = "";
             if (datatable.Rows.Count == 0)
             {
                 throw new Exception($"Cannot call {_tablename} Save method, there were no rows returned from table.");
@@ -168,5 +181,7 @@ namespace CPUFramework
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyname));
         }
+
+        public string ErrorMessage { get; set; } = "";
     }
 }

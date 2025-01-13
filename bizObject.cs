@@ -109,10 +109,10 @@ namespace CPUFramework
             this.Delete(id);
         }
 
-        public void Save()
+        public void Save(string sproc = "")
         {
             this.ErrorMessage = "";
-            SqlCommand cmd = SQLUtility.GetSqlCommand(_updatesproc);
+            SqlCommand cmd = SQLUtility.GetSqlCommand(sproc == "" ? _updatesproc : sproc);
             foreach (SqlParameter param in cmd.Parameters)
             {
                 var prop = GetProp(param.ParameterName, true, false);
